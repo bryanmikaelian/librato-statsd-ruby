@@ -21,7 +21,7 @@ $statsd = Statsd.new 'localhost', 8125
 $statsd.increment 'user.signups'
 
 # Gauges
-$statsd.gauge 'user.sessions', 10
+$statsd.gauge 'user.sessions', 10, sample_rate: 0.5
 
 # Histogram
 $statsd.histogram 'user.downloads', 5
@@ -37,7 +37,7 @@ end
 You can also submit tags with any metrics.
 
 ```ruby
-$statsd.increment 'user.signups', 1, tags: { country: 'US', addon_user: false }
+$statsd.increment 'user.signups', tags: { country: 'US', addon_user: false }
 ```
 
 Note: This is a beta feature and is still under development. If you are interested in trying this feature out, send an email to [support@librato.com](mailto:support@librato.com)
