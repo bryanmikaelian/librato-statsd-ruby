@@ -1,13 +1,12 @@
 # -*- encoding: utf-8 -*-
 
-Gem::Specification.new("statsd-ruby", "1.3.0") do |s|
+Gem::Specification.new("librato-statsd-ruby", "1.0.0.beta") do |s|
   s.authors = ["Rein Henrichs"]
-  s.email = "reinh@reinh.com"
+  s.email = 'support@librato.com'
 
-  s.summary = "A Ruby StatsD client"
-  s.description = "A Ruby StatsD client (https://github.com/etsy/statsd)"
+  s.summary = "A Ruby StatsD client with Librato support"
 
-  s.homepage = "https://github.com/reinh/statsd"
+  s.homepage = "https://www.librato.com/docs/kb/collect/collection_agents/stastd.html"
   s.licenses = %w[MIT]
 
   s.extra_rdoc_files = %w[LICENSE.txt README.rdoc]
@@ -22,4 +21,3 @@ Gem::Specification.new("statsd-ruby", "1.3.0") do |s|
   s.add_development_dependency "simplecov", ">= 0.6.4"
   s.add_development_dependency "rake"
 end
-
