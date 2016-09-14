@@ -4,7 +4,7 @@ Librato-based Ruby client for [StatsD](https://github.com/etsy/statsd).
 
 # Installing
 
-`gem "librato-statsd-ruby", 1.0.0.beta`
+`gem "librato-statsd-ruby", '1.0.0.beta'`
 
 You will also need to be running statsd with the Librato backend pluggin. See this [repo](https://github.com/librato/statsd-librato-backend) for more details.
   
