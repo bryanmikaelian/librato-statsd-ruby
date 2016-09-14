@@ -1,6 +1,6 @@
 = statsd-ruby
 
-A Ruby client for {StatsD}[https://github.com/etsy/statsd]
+Librato-based Ruby client for {StatsD}[https://github.com/etsy/statsd]
 
 = Installing
 
@@ -12,6 +12,6 @@ Bundler:
 
 == Credit
 
-This is a fork of the orignal Ruby statsd client library written by [Rein Henrichs](https://github.com/reinh/statsd) that adds support for Librato-specific features.
+This is a fork of the orignal Ruby statsd client library written by {Rein Henrichs}[https://github.com/reinh/statsd] that adds support for Librato-specific features.
 
 Copyright (c) 2011, 2012, 2013 Rein Henrichs. See LICENSE.txt for further details.
