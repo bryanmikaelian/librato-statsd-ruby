@@ -1,4 +1,4 @@
-= statsd-ruby
+= librato-statsd-ruby
 
 Librato-based Ruby client for {StatsD}[https://github.com/etsy/statsd]
 
