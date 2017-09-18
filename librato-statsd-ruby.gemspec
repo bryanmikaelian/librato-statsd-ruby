@@ -9,7 +9,7 @@ Gem::Specification.new("librato-statsd-ruby", "1.0.0") do |s|
   s.homepage = "https://www.librato.com/docs/kb/collect/collection_agents/stastd.html"
   s.licenses = %w[MIT]
 
-  s.extra_rdoc_files = %w[LICENSE.txt README.rdoc]
+  s.extra_rdoc_files = %w[LICENSE.txt README.md]
 
   if $0 =~ /gem/ # If running under rubygems (building), otherwise, just leave
     s.files         = `git ls-files`.split($\)
