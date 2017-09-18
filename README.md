@@ -4,7 +4,7 @@ Librato-based Ruby client for [StatsD](https://github.com/etsy/statsd).
 
 # Installing
 
-`gem "librato-statsd-ruby", '1.0.0.beta'`
+`gem "librato-statsd-ruby", '1.0.0'`
 
 You will also need to be running statsd with the Librato backend pluggin. See this [repo](https://github.com/librato/statsd-librato-backend) for more details.
   
@@ -39,9 +39,6 @@ You can also submit tags with any metrics.
 ```ruby
 $statsd.increment 'user.signups', tags: { country: 'US', addon_user: false }
 ```
-
-Note: This is a beta feature and is still under development. If you are interested in trying this feature out, send an email to [support@librato.com](mailto:support@librato.com)
-
 
 # Credit
 
