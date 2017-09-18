@@ -4,8 +4,9 @@ require 'simplecov'
 SimpleCov.start
 
 require 'minitest/autorun'
-require 'statsd'
+require 'librato-statsd-ruby'
 require 'logger'
+require 'timeout'
 
 class FakeUDPSocket
   def initialize

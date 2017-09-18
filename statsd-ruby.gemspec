@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 
-Gem::Specification.new("librato-statsd-ruby", "1.0.0.beta") do |s|
-  s.authors = ["Rein Henrichs"]
+Gem::Specification.new("librato-statsd-ruby", "1.0.0") do |s|
+  s.authors = ["Bryan Mikaelian"]
   s.email = 'support@librato.com'
 
   s.summary = "A Ruby StatsD client with Librato support"

@@ -91,7 +91,7 @@ describe Statsd do
     describe "with a sample rate" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should format the message according to the statsd spec" do
-        @statsd.increment('foobar', 0.5)
+        @statsd.increment('foobar', { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:1|c|@0.5']
       end
     end
@@ -106,7 +106,7 @@ describe Statsd do
     describe "with a sample rate" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should format the message according to the statsd spec" do
-        @statsd.decrement('foobar', 0.5)
+        @statsd.decrement('foobar', { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:-1|c|@0.5']
       end
     end
@@ -123,7 +123,7 @@ describe Statsd do
     describe "with a sample rate" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should format the message according to the statsd spec" do
-        @statsd.gauge('begrutten-suffusion', 536, 0.1)
+        @statsd.gauge('begrutten-suffusion', 536, { sample_rate: 0.1 })
         @socket.recv.must_equal ['begrutten-suffusion:536|g|@0.1']
       end
     end
@@ -138,7 +138,7 @@ describe Statsd do
     describe "with a sample rate" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should format the message according to the statsd spec" do
-        @statsd.timing('foobar', 500, 0.5)
+        @statsd.timing('foobar', 500, { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:500|ms|@0.5']
       end
     end
@@ -153,7 +153,7 @@ describe Statsd do
     describe "with a sample rate" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should format the message according to the statsd spec" do
-        @statsd.set('foobar', 500, 0.5)
+        @statsd.set('foobar', 500, { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:500|s|@0.5']
       end
     end
@@ -186,7 +186,7 @@ describe Statsd do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
 
       it "should format the message according to the statsd spec" do
-        @statsd.time('foobar', 0.5) { 'test' }
+        @statsd.time('foobar', { sample_rate: 0.5 }) { 'test' }
         @socket.recv.must_equal ['foobar:0|ms|@0.5']
       end
     end
@@ -196,7 +196,7 @@ describe Statsd do
     describe "when the sample rate is 1" do
       before { class << @statsd; def rand; raise end; end }
       it "should send" do
-        @statsd.timing('foobar', 500, 1)
+        @statsd.timing('foobar', 500, { sample_rate: 1 })
         @socket.recv.must_equal ['foobar:500|ms']
       end
     end
@@ -204,7 +204,7 @@ describe Statsd do
     describe "when the sample rate is greater than a random value [0,1]" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should send" do
-        @statsd.timing('foobar', 500, 0.5)
+        @statsd.timing('foobar', 500, { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:500|ms|@0.5']
       end
     end
@@ -212,14 +212,14 @@ describe Statsd do
     describe "when the sample rate is less than a random value [0,1]" do
       before { class << @statsd; def rand; 1; end; end } # ensure no delivery
       it "should not send" do
-        @statsd.timing('foobar', 500, 0.5).must_equal nil
+        @statsd.timing('foobar', 500, { sample_rate: 0.5 }).must_equal nil
       end
     end
 
     describe "when the sample rate is equal to a random value [0,1]" do
       before { class << @statsd; def rand; 0; end; end } # ensure delivery
       it "should send" do
-        @statsd.timing('foobar', 500, 0.5)
+        @statsd.timing('foobar', 500, { sample_rate: 0.5 })
         @socket.recv.must_equal ['foobar:500|ms|@0.5']
       end
     end
@@ -308,12 +308,12 @@ describe Statsd do
 
   describe "stat names" do
     it "should accept anything as stat" do
-      @statsd.increment(Object, 1)
+      @statsd.increment(Object)
     end
 
     it "should replace ruby constant delimeter with graphite package name" do
       class Statsd::SomeClass; end
-      @statsd.increment(Statsd::SomeClass, 1)
+      @statsd.increment(Statsd::SomeClass)
 
       @socket.recv.must_equal ['Statsd.SomeClass:1|c']
     end
@@ -325,14 +325,14 @@ describe Statsd do
 
       it "should replace ruby constant delimiter with custom delimiter" do
         class Statsd::SomeOtherClass; end
-        @statsd.increment(Statsd::SomeOtherClass, 1)
+        @statsd.increment(Statsd::SomeOtherClass)
 
         @socket.recv.must_equal ['Statsd-SomeOtherClass:1|c']
       end
     end
 
     it "should replace statsd reserved chars in the stat name" do
-      @statsd.increment('ray@hostname.blah|blah.blah:blah', 1)
+      @statsd.increment('ray@hostname.blah|blah.blah:blah')
       @socket.recv.must_equal ['ray_hostname.blah_blah.blah_blah:1|c']
     end
   end
@@ -416,6 +416,43 @@ describe Statsd do
       c = $connect_count
       @statsd.connect
       ($connect_count - c).must_equal 1
+    end
+  end
+
+  describe "tags" do
+    before { class << @statsd; def rand; 0; end; end } # ensure delivery
+
+    describe "with counters" do
+      it "accepts tags" do
+        @statsd.increment('foobar', { tags: { foo: 'bar' }})
+        @socket.recv.must_equal ['foobar#foo=bar:1|c']
+      end
+
+      it "accepts tags with sample rate" do
+        @statsd.increment('foobar', { sample_rate: 0.5, tags: { foo: 'bar' }})
+        @socket.recv.must_equal ['foobar#foo=bar:1|c|@0.5']
+      end
+    end
+
+    describe "with timers" do
+      it "accepts tags" do
+        @statsd.time('foobar', { tags: { foo: 'bar' }}) {}
+        @socket.recv.must_equal ['foobar#foo=bar:0|ms']
+      end
+
+      it "accepts tags with sample rate" do
+        @statsd.time('foobar', { sample_rate: 0.5, tags: { foo: 'bar' }}) {}
+        @socket.recv.must_equal ['foobar#foo=bar:0|ms|@0.5']
+      end
+    end
+
+    describe "with postfix" do
+      before { @statsd.postfix = 'foo' }
+
+      it "accepts tags" do
+        @statsd.increment('foobar', { tags: { foo: 'bar' }})
+        @socket.recv.must_equal ['foobar.foo#foo=bar:1|c']
+      end
     end
   end
 
